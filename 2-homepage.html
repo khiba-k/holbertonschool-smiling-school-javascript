@@ -275,7 +275,7 @@
                 card.className = "card";
 
                 const thumbnail = document.createElement("img");
-                thumbnail.src = res[currentIndex]["thumb_url"]; // Dynamic thumbnail image
+                thumbnail.src = res[currentIndex]["thumb_url"];
                 thumbnail.className = "card-img-top";
                 thumbnail.alt = "Video thumbnail";
 
@@ -293,23 +293,23 @@
 
                 const title = document.createElement("h5");
                 title.className = "card-title font-weight-bold";
-                title.textContent = res[currentIndex]["title"]; // Dynamic title
+                title.textContent = res[currentIndex]["title"];
 
                 const description = document.createElement("p");
                 description.className = "card-text text-muted";
-                description.textContent = res[currentIndex]["sub-title"]; // Dynamic description
+                description.textContent = res[currentIndex]["sub-title"];
 
                 const creator = document.createElement("div");
                 creator.className = "creator d-flex align-items-center";
                 const creatorImg = document.createElement("img");
                 creatorImg.src =
-                  res[currentIndex]["author_pic_url"] || "images/profile_1.jpg"; // Dynamic creator image
+                  res[currentIndex]["author_pic_url"] || "images/profile_1.jpg";
                 creatorImg.alt = "Creator of Video";
                 creatorImg.width = 30;
                 creatorImg.className = "rounded-circle";
                 const creatorName = document.createElement("h6");
                 creatorName.className = "pl-3 m-0 main-color";
-                creatorName.textContent = res[currentIndex]["author"]; // Dynamic creator name
+                creatorName.textContent = res[currentIndex]["author"];
                 creator.appendChild(creatorImg);
                 creator.appendChild(creatorName);
 
@@ -329,7 +329,7 @@
 
                 const duration = document.createElement("span");
                 duration.className = "main-color";
-                duration.textContent = res[currentIndex]["duration"]; // Dynamic duration
+                duration.textContent = res[currentIndex]["duration"]; 
 
                 info.appendChild(rating);
                 info.appendChild(duration);
@@ -367,7 +367,6 @@
           url: "https://smileschool-api.hbtn.info/quotes",
           type: "GET",
           beforeSend: function () {
-            // Show loading spinner or message here
             $(".loader").show();
           },
           success: function (res) {
@@ -398,10 +397,8 @@
               img.classList.add("d-block", "align-self-center");
               img.alt = `Carousel Pic ${idx + 1}`;
 
-              // Append image to its column
               imgCol.appendChild(img);
 
-              // Create the text column div
               const textCol = document.createElement("div");
               textCol.classList.add(
                 "col-12",
@@ -411,26 +408,21 @@
                 "offset-lg-0"
               );
 
-              // Create the quote text div
               const quoteTextDiv = document.createElement("div");
               quoteTextDiv.classList.add("quote-text");
 
-              // Create the paragraph
               const paragraph = document.createElement("p");
               paragraph.classList.add("text-white");
               paragraph.innerHTML = obj["text"];
 
-              // Create the name heading
               const nameHeading = document.createElement("h4");
               nameHeading.classList.add("text-white", "font-weight-bold");
               nameHeading.textContent = obj["name"];
 
-              // Create the span
               const span = document.createElement("span");
               span.classList.add("text-white");
               span.textContent = obj["title"];
 
-              // Append elements together
               quoteTextDiv.appendChild(paragraph);
               quoteTextDiv.appendChild(nameHeading);
               quoteTextDiv.appendChild(span);
