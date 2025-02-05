@@ -189,7 +189,6 @@
           url: "https://smileschool-api.hbtn.info/quotes",
           type: "GET",
           beforeSend: function () {
-            // Show loading spinner or message here
             $(".loader").show();
           },
           success: function (res) {
@@ -200,11 +199,9 @@
                 ? carouselItem.classList.add("carousel-item", "active")
                 : carouselItem.classList.add("carousel-item");
 
-              // Create the row div
               const rowDiv = document.createElement("div");
               rowDiv.classList.add("row", "mx-auto", "align-items-center");
 
-              // Create the first column div
               const imgCol = document.createElement("div");
               imgCol.classList.add(
                 "col-12",
@@ -214,16 +211,13 @@
                 "text-center"
               );
 
-              // Create the image element
               const img = document.createElement("img");
               img.src = obj["pic_url"];
               img.classList.add("d-block", "align-self-center");
               img.alt = `Carousel Pic ${idx + 1}`;
 
-              // Append image to its column
               imgCol.appendChild(img);
 
-              // Create the text column div
               const textCol = document.createElement("div");
               textCol.classList.add(
                 "col-12",
@@ -233,26 +227,21 @@
                 "offset-lg-0"
               );
 
-              // Create the quote text div
               const quoteTextDiv = document.createElement("div");
               quoteTextDiv.classList.add("quote-text");
 
-              // Create the paragraph
               const paragraph = document.createElement("p");
               paragraph.classList.add("text-white");
               paragraph.innerHTML = obj["text"];
 
-              // Create the name heading
               const nameHeading = document.createElement("h4");
               nameHeading.classList.add("text-white", "font-weight-bold");
               nameHeading.textContent = obj["name"];
 
-              // Create the span
               const span = document.createElement("span");
               span.classList.add("text-white");
               span.textContent = obj["title"];
 
-              // Append elements together
               quoteTextDiv.appendChild(paragraph);
               quoteTextDiv.appendChild(nameHeading);
               quoteTextDiv.appendChild(span);
