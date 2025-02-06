@@ -220,6 +220,7 @@
       </div>
     </header>
     <main class="main">
+      <!-- Quotes Section -->
       <section class="quotes section d-flex align-items-center">
         <div class="container">
           <div
@@ -228,72 +229,7 @@
             data-ride="carousel"
           >
             <div class="carousel-inner">
-              <div class="carousel-item active">
-                <div class="row mx-auto align-items-center">
-                  <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
-                    <img
-                      src="images/profile_5.jpg"
-                      class="d-block align-self-center"
-                      alt="Carousel Pic 1"
-                    />
-                  </div>
-                  <div class="col-12 col-sm-7 offset-sm-2 col-lg-9 offset-lg-0">
-                    <div class="quote-text">
-                      <p class="text-white">
-                        « Those tutorials are concise and go straight to the
-                        point. I can’t think of a better place to learn smiling.
-                        And it’s so fun!
-                      </p>
-                      <h4 class="text-white font-weight-bold">Person Name</h4>
-                      <span class="text-white">weather presenter</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="carousel-item">
-                <div class="row mx-auto align-items-center">
-                  <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
-                    <img
-                      src="images/profile_5.jpg"
-                      class="d-block align-self-center"
-                      alt="Carousel Pic 1"
-                    />
-                  </div>
-                  <div class="col-12 col-sm-7 offset-sm-2 col-lg-9 offset-lg-0">
-                    <div class="quote-text">
-                      <p class="text-white">
-                        « Those tutorials are concise and go straight to the
-                        point. I can’t think of a better place to learn smiling.
-                        And it’s so fun!
-                      </p>
-                      <h4 class="text-white font-weight-bold">Person Name</h4>
-                      <span class="text-white">weather presenter</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="carousel-item">
-                <div class="row mx-auto align-items-center">
-                  <div class="col-12 col-sm-2 col-lg-2 offset-lg-1 text-center">
-                    <img
-                      src="images/profile_5.jpg"
-                      class="d-block align-self-center"
-                      alt="Carousel Pic 1"
-                    />
-                  </div>
-                  <div class="col-12 col-sm-7 offset-sm-2 col-lg-9 offset-lg-0">
-                    <div class="quote-text">
-                      <p class="text-white">
-                        « Those tutorials are concise and go straight to the
-                        point. I can’t think of a better place to learn smiling.
-                        And it’s so fun!
-                      </p>
-                      <h4 class="text-white font-weight-bold">Person Name</h4>
-                      <span class="text-white">weather presenter</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <div class="loader"></div>
             </div>
             <a
               class="carousel-control-prev arrow-left"
@@ -461,5 +397,88 @@
         </div>
       </div>
     </footer>
+    <!-- Script -->
+    <script>
+      $(document).ready(function () {
+        //Dynamic quotes
+        $.ajax({
+          url: "https://smileschool-api.hbtn.info/quotes",
+          type: "GET",
+          beforeSend: function () {
+            $(".loader").show();
+          },
+          success: function (res) {
+            res.forEach((obj, idx, self) => {
+              // Create the main carousel item div
+              const carouselItem = document.createElement("div");
+              idx === 0
+                ? carouselItem.classList.add("carousel-item", "active")
+                : carouselItem.classList.add("carousel-item");
+
+              const rowDiv = document.createElement("div");
+              rowDiv.classList.add("row", "mx-auto", "align-items-center");
+
+              const imgCol = document.createElement("div");
+              imgCol.classList.add(
+                "col-12",
+                "col-sm-2",
+                "col-lg-2",
+                "offset-lg-1",
+                "text-center"
+              );
+
+              const img = document.createElement("img");
+              img.src = obj["pic_url"];
+              img.classList.add("d-block", "align-self-center");
+              img.alt = `Carousel Pic ${idx + 1}`;
+
+              imgCol.appendChild(img);
+
+              const textCol = document.createElement("div");
+              textCol.classList.add(
+                "col-12",
+                "col-sm-7",
+                "offset-sm-2",
+                "col-lg-9",
+                "offset-lg-0"
+              );
+
+              const quoteTextDiv = document.createElement("div");
+              quoteTextDiv.classList.add("quote-text");
+
+              const paragraph = document.createElement("p");
+              paragraph.classList.add("text-white");
+              paragraph.innerHTML = obj["text"];
+
+              const nameHeading = document.createElement("h4");
+              nameHeading.classList.add("text-white", "font-weight-bold");
+              nameHeading.textContent = obj["name"];
+
+              const span = document.createElement("span");
+              span.classList.add("text-white");
+              span.textContent = obj["title"];
+
+              quoteTextDiv.appendChild(paragraph);
+              quoteTextDiv.appendChild(nameHeading);
+              quoteTextDiv.appendChild(span);
+              textCol.appendChild(quoteTextDiv);
+              rowDiv.appendChild(imgCol);
+              rowDiv.appendChild(textCol);
+              carouselItem.appendChild(rowDiv);
+
+              let carouselDiv =
+                document.getElementsByClassName("carousel-inner")[0];
+              carouselDiv.append(carouselItem);
+            });
+          },
+          complete: function () {
+            $(".loader").hide();
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      });
+    </script>
   </body>
 </html>
