@@ -287,13 +287,255 @@
           </div>
         </div>
       </section>
+      <!-- Latest Videos Section -->
+      <section class="popular section d-flex align-items-center">
+        <div class="container">
+          <header class="section-header">
+            <h2 class="text-center">
+              <span class="main-color font-weight-bold">Latest</span> videos
+            </h2>
+          </header>
+          <div
+            id="carouselExampleControls3"
+            class="carousel slide"
+            data-ride="carousel"
+          >
+            <div class="carousel-inner">
+              <div class="loader2"></div>
+            </div>
+            <a
+              class="carousel-control-prev arrow-left"
+              href="#carouselExampleControls3"
+              role="button"
+              data-slide="prev"
+            >
+              <img
+                src="images/arrow_black_left.png"
+                alt="Quote Previous"
+                aria-hidden="true"
+              />
+              <span class="sr-only">Previous</span>
+            </a>
+            <a
+              class="carousel-control-next arrow-right"
+              href="#carouselExampleControls3"
+              role="button"
+              data-slide="next"
+            >
+              <img
+                src="images/arrow_black_right.png"
+                alt="Quote Next"
+                aria-hidden="true"
+              />
+              <span class="sr-only">Next</span>
+            </a>
+          </div>
+        </div>
+      </section>
     </main>
+    <!-- Footer -->
+    <footer class="footer d-flex align-items-center justify-content-center">
+      <div class="container">
+        <div class="row d-flex align-items-center flex-column flex-sm-row">
+          <div
+            class="col footer-item d-flex justify-content-center justify-content-sm-start"
+          >
+            <div class="footer-logo">
+              <img
+                src="images/smile_off.png"
+                alt="navbar-logo"
+                width="37px"
+                class="mr-4 mb-3 mb-sm-0 mr-sm-3 img-fluid"
+              />
+              <img
+                src="images/logo.png"
+                alt="navbar-logo-text"
+                width="114px"
+                class="mr-4 img-fluid"
+              />
+            </div>
+          </div>
+          <div
+            class="col d-flex align-items-end align-self-sm-end justify-content-center order-2 order-sm-0 footer-item"
+          >
+            <div class="trademark text-muted">
+              <span>©smileschool 2020</span>
+            </div>
+          </div>
+          <div
+            class="col d-flex align-items-center align-items-sm-end justify-content-center justify-content-sm-end footer-item"
+          >
+            <div class="social">
+              <ul class="social nav">
+                <li class="social-item facebook-icon">
+                  <a
+                    href="https://www.facebook.com/HolbertonSchool/"
+                    class="social-link"
+                    aria-label="Facebook"
+                    ><span class="holberton_school-icon-ic_facebook"></span
+                  ></a>
+                </li>
+                <li class="social-item twitter-icon">
+                  <a
+                    href="https://twitter.com/holbertonschool"
+                    class="social-link"
+                    aria-label="Twitter"
+                    ><span class="holberton_school-icon-ic_twitter"></span
+                  ></a>
+                </li>
+                <li class="social-item instagram-icon">
+                  <a
+                    href="https://www.instagram.com/holbertonschool/"
+                    class="social-link"
+                    aria-label="Instagram"
+                    ><span class="holberton_school-icon-ic_instagram"></span
+                  ></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
     <!-- Script -->
     <script>
       $(document).ready(function () {
-        // Dynamic tutorials
+        // Dynamic videos
         $.ajax({
           url: "https://smileschool-api.hbtn.info/latest-videos",
+          type: "GET",
+          beforeSend: function () {
+            $(".loader2").show();
+          },
+          success: function (res) {
+            console.log(res);
+            const carouselInner =
+              document.getElementsByClassName("carousel-inner")[2];
+            let itemsPerSlide = 4;
+
+            // Update itemsPerSlide based on window size
+            if (window.innerWidth < 576) {
+              itemsPerSlide = 1;
+            } else if (window.innerWidth < 768) {
+              itemsPerSlide = 2;
+            } else if (window.innerWidth < 992) {
+              itemsPerSlide = 3;
+            }
+
+            // Calculate the number of slides needed
+            let numOfSlides = Math.ceil(res.length / itemsPerSlide);
+            let currentIndex = 0;
+
+            // Loop through the number of slides and create containers for each slide
+            for (let slideIndex = 0; slideIndex < numOfSlides; slideIndex++) {
+              const slideContainer = document.createElement("div");
+              slideContainer.className =
+                "carousel-item" + (slideIndex === 0 ? " active" : "");
+
+              const row = document.createElement("div");
+              row.className = "row align-items-center mx-auto";
+
+              // Add items to the slide
+              for (let i = 0; i < itemsPerSlide; i++) {
+                if (currentIndex >= res.length) break;
+
+                const container = document.createElement("div");
+                container.className =
+                  "col-12 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center justify-content-md-end justify-content-lg-center";
+
+                const card = document.createElement("div");
+                card.className = "card";
+
+                const thumbnail = document.createElement("img");
+                thumbnail.src = res[currentIndex]["thumb_url"];
+                thumbnail.className = "card-img-top";
+                thumbnail.alt = "Video thumbnail";
+
+                const overlay = document.createElement("div");
+                overlay.className = "card-img-overlay text-center";
+                const playIcon = document.createElement("img");
+                playIcon.src = "images/play.png";
+                playIcon.alt = "Play";
+                playIcon.width = 64;
+                playIcon.className = "align-self-center play-overlay";
+                overlay.appendChild(playIcon);
+
+                const cardBody = document.createElement("div");
+                cardBody.className = "card-body";
+
+                const title = document.createElement("h5");
+                title.className = "card-title font-weight-bold";
+                title.textContent = res[currentIndex]["title"];
+
+                const description = document.createElement("p");
+                description.className = "card-text text-muted";
+                description.textContent = res[currentIndex]["sub-title"];
+
+                const creator = document.createElement("div");
+                creator.className = "creator d-flex align-items-center";
+                const creatorImg = document.createElement("img");
+                creatorImg.src =
+                  res[currentIndex]["author_pic_url"] || "images/profile_1.jpg";
+                creatorImg.alt = "Creator of Video";
+                creatorImg.width = 30;
+                creatorImg.className = "rounded-circle";
+                const creatorName = document.createElement("h6");
+                creatorName.className = "pl-3 m-0 main-color";
+                creatorName.textContent = res[currentIndex]["author"];
+                creator.appendChild(creatorImg);
+                creator.appendChild(creatorName);
+
+                const info = document.createElement("div");
+                info.className = "info pt-3 d-flex justify-content-between";
+
+                const rating = document.createElement("div");
+                rating.className = "rating";
+                let numOfStars = res[currentIndex]["star"];
+                for (let j = 0; j < numOfStars; j++) {
+                  const star = document.createElement("img");
+                  star.src = "images/star_on.png";
+                  star.alt = "star on";
+                  star.width = 15;
+                  rating.appendChild(star);
+                }
+
+                const duration = document.createElement("span");
+                duration.className = "main-color";
+                duration.textContent = res[currentIndex]["duration"];
+
+                info.appendChild(rating);
+                info.appendChild(duration);
+
+                cardBody.appendChild(title);
+                cardBody.appendChild(description);
+                cardBody.appendChild(creator);
+                cardBody.appendChild(info);
+
+                card.appendChild(thumbnail);
+                card.appendChild(overlay);
+                card.appendChild(cardBody);
+                container.appendChild(card);
+
+                row.appendChild(container);
+
+                currentIndex++;
+              }
+
+              slideContainer.appendChild(row);
+              carouselInner.appendChild(slideContainer);
+            }
+          },
+
+          complete: function () {
+            $(".loader2").hide();
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+        // Dynamic tutorials
+        $.ajax({
+          url: "https://smileschool-api.hbtn.info/popular-tutorials",
           type: "GET",
           beforeSend: function () {
             $(".loader2").show();
