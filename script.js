@@ -330,3 +330,130 @@ function quotes() {
     });
   });
 }
+
+function courses() {
+  $(document).ready(function () {
+    const query = "";
+    let topic = "all";
+    let sort = "most_popular";
+
+    // Search Tutorial
+    $(".search-text-area").on("input", function () {
+      const query = $(this).val();
+      fetchCourses(query, topic, sort);
+    });
+
+    // Change Topic
+    $(".box2 .dropdown-menu .dropdown-item").click(function (e) {
+      e.preventDefault();
+      topic = $(this).text();
+      fetchCourses(query, topic, sort);
+      $(this).closest(".dropdown").find(".dropdown-toggle span").text(topic);
+    });
+
+    // Sort By
+    $(".box3 .dropdown-menu .dropdown-item").click(function (e) {
+      e.preventDefault();
+      sort =
+        $(this).text() === "Most Popular"
+          ? "most_popular"
+          : $(this).text() === "Most Recent"
+          ? "most_recent"
+          : "most_viewed";
+      let sortBy = $(this).text();
+      fetchCourses(query, topic, sort);
+      $(this).closest(".dropdown").find(".dropdown-toggle span").text(sortBy);
+    });
+
+    function fetchCourses(queryArg, topicArg, sortArg) {
+      $.ajax({
+        url: "https://smileschool-api.hbtn.info/courses",
+        type: "GET",
+        data: { q: queryArg, topic: topicArg, sort: sortArg },
+        beforeSend: function () {
+          $(".loader2").show();
+        },
+        success: function (res) {
+          console.log(res);
+          const courses = res.courses;
+          console.log(courses);
+          const row = $(".row").eq(1);
+          row.empty();
+
+          // Get number of videos
+          let countText = $(".section-title .video-count");
+          countText.text(`${courses.length} videos`);
+
+          // Render cards dynamically
+          courses.forEach((course) => {
+            const card = $("<div>").addClass(
+              "col-12 col-sm-4 col-lg-3 d-flex justify-content-center"
+            );
+            const cardInner = $("<div>").addClass("card shadow-sm rounded-lg");
+            const img = $("<img>")
+              .attr("src", course.thumb_url)
+              .addClass("card-img-top")
+              .attr("alt", "Video thumbnail");
+            const overlay = $("<div>").addClass("card-img-overlay text-center");
+            const playIcon = $("<img>")
+              .attr("src", "images/play.png")
+              .attr("alt", "Play")
+              .attr("width", "64px")
+              .addClass("align-self-center play-overlay");
+            const cardBody = $("<div>").addClass("card-body");
+            const title = $("<h5>")
+              .addClass("card-title font-weight-bold")
+              .text(course.title);
+            const subTitle = $("<p>")
+              .addClass("card-text text-muted")
+              .text(course["sub-title"]);
+            const creator = $("<div>").addClass(
+              "creator d-flex align-items-center"
+            );
+            const creatorImg = $("<img>")
+              .attr("src", "images/profile_1.jpg")
+              .attr("alt", "Creator of Video")
+              .attr("width", "30px")
+              .addClass("rounded-circle");
+            const creatorName = $("<h6>")
+              .addClass("pl-3 m-0 main-color")
+              .text(course.author);
+            const info = $("<div>").addClass(
+              "info pt-3 d-flex justify-content-between"
+            );
+            const rating = $("<div>")
+              .addClass("rating")
+              .html(generateStars(course.star));
+            const duration = $("<span>")
+              .addClass("main-color")
+              .text(course.duration);
+
+            overlay.append(playIcon);
+            creator.append(creatorImg, creatorName);
+            info.append(rating, duration);
+            cardBody.append(title, subTitle, creator, info);
+            cardInner.append(img, overlay, cardBody);
+            card.append(cardInner);
+            row.append(card);
+          });
+        },
+        complete: function () {
+          $(".loader2").hide();
+        },
+      });
+    }
+
+    // Function to generate star rating dynamically
+    function generateStars(starCount) {
+      let stars = "";
+      for (let i = 0; i < 5; i++) {
+        stars += `<img src="images/${
+          i < starCount ? "star_on" : "star_off"
+        }.png" alt="star" width="15px">`;
+      }
+      return stars;
+    }
+
+    fetchCourses(query, topic, sort);
+  });
+}
