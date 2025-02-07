@@ -190,11 +190,9 @@
       <section class="section results">
         <div class="container">
           <div class="section-title">
-            <span class="text-muted video-count">11 videos</span>
+            <span class="text-muted video-count"></span>
           </div>
-          <div class="row" style="border: 2px solid green;">
-            
-          </div>
+          <div class="row"></div>
         </div>
       </section>
     </main>
@@ -265,25 +263,61 @@
   <!-- Script -->
   <script>
     $(document).ready(function () {
-      function fetchCourses() {
-        const query = $("#search").val() || "";
-        const topic = $("#topic").val() || "all";
-        const sort = $("#sort").val() || "most_popular";
+      const query = "";
+      let topic = "all";
+      let sort = "most_popular";
 
+      // Search Tutorial
+      $(".search-text-area").on("input", function () {
+        const query = $(this).val();
+        fetchCourses(query, topic, sort)
+      });
+
+      // Change Topic
+      $(".box2 .dropdown-menu .dropdown-item").click(function (e) {
+        e.preventDefault();
+        topic = $(this).text();
+        fetchCourses(query, topic, sort);
+        $(this).closest(".dropdown").find(".dropdown-toggle span").text(topic);
+      });
+
+      // Sort By
+      $(".box3 .dropdown-menu .dropdown-item").click(function (e) {
+        e.preventDefault();
+        sort =
+          $(this).text() === "Most Popular"
+            ? "most_popular"
+            : $(this).text() === "Most Recent"
+            ? "most_recent"
+            : "most_viewed";
+        let sortBy = $(this).text();
+        fetchCourses(query, topic, sort);
+        $(this).closest(".dropdown").find(".dropdown-toggle span").text(sortBy);
+      });
+
+      function fetchCourses(queryArg, topicArg, sortArg) {
         $.ajax({
           url: "https://smileschool-api.hbtn.info/courses",
           type: "GET",
-          data: { q: query, topic: topic, sort: sort },
+          data: { q: queryArg, topic: topicArg, sort: sortArg },
           beforeSend: function () {
             $(".loader2").show();
           },
           success: function (res) {
+            console.log(res);
             const courses = res.courses;
+            console.log(courses);
             const row = $(".row").eq(1);
+            row.empty();
 
+            // Get number of videos
+            let countText = $(".section-title .video-count");
+            countText.text(`${courses.length} videos`);
+
+            // Render cards dynamically
             courses.forEach((course) => {
               const card = $("<div>").addClass(
-                "col-12 col-sm-4 col-lg-3 d-flex justify-content-center border border-danger"
+                "col-12 col-sm-4 col-lg-3 d-flex justify-content-center"
               );
               const cardInner = $("<div>").addClass("card");
               const img = $("<img>")
@@ -352,8 +386,8 @@
         return stars;
       }
 
-      $("#search, #topic, #sort").on("change keyup", fetchCourses);
-      fetchCourses();
+      // $("#search, #topic, #sort").on("change keyup", fetchCourses);
+      fetchCourses(query, topic, sort);
     });
   </script>
 </html>
